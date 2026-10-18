@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Admin — Media Pembelajaran Informatika</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+.admin-shell { max-width: 1180px; margin: 0 auto; padding: 1.5rem 1.25rem 3rem; }
+.login-card { max-width: 420px; margin: 5rem auto; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; box-shadow: var(--shadow-lg); }
+.login-card h1 { margin-top: 0; font-size: 1.4rem; }
+.login-card label { margin-bottom: .75rem; }
+.admin-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+.admin-header h1 { margin: 0; font-size: 1.4rem; }
+.admin-user { color: var(--muted); font-size: .9rem; }
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+.stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; box-shadow: var(--shadow); }
+.stat-card .label { color: var(--muted); font-size: .85rem; margin-bottom: .25rem; }
+.stat-card .value { font-size: 1.8rem; font-weight: 800; color: var(--accent); }
+.toolbar { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 1rem; align-items: center; }
+.toolbar input, .toolbar select { padding: .5rem .75rem; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); }
+.admin-table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: auto; }
+.admin-table { width: 100%; border-collapse: collapse; font-size: .9rem; min-width: 780px; }
+.admin-table th, .admin-table td { padding: .65rem .75rem; text-align: left; border-bottom: 1px solid var(--border); vertical-align: top; }
+.admin-table th { background: var(--surface-2); font-weight: 700; font-size: .82rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+.admin-table tbody tr:hover { background: var(--surface-2); }
+.pagination { display: flex; gap: .5rem; align-items: center; justify-content: center; padding: 1rem; }
+.modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 100; display: none; align-items: center; justify-content: center; padding: 1rem; }
+.modal-backdrop.open { display: flex; }
+.modal-content { background: var(--surface); border-radius: var(--radius); padding: 1.5rem; max-width: 640px; width: 100%; max-height: 90vh; overflow-y: auto; box-shadow: var(--shadow-lg); }
+.modal-content h3 { margin-top: 0; }
+.detail-block { margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
+.detail-block:last-child { border-bottom: none; }
+.detail-block h4 { margin: 0 0 .5rem; font-size: .95rem; color: var(--accent); }
+.detail-block p { margin: .25rem 0; font-size: .9rem; }
+.empty-state { padding: 2.5rem; text-align: center; color: var(--muted); }
+.reflection-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 1rem; }
+</style>
+</head>
+<body>
+
+<div class="admin-shell">
+
+    <!-- LOGIN VIEW -->
+    <div id="login-view" style="display:none;">
+        <div class="login-card">
+            <h1>🔐 Login Admin</h1>
+            <p class="micro">Halaman ini hanya untuk guru/admin yang terdaftar.</p>
+            <form id="login-form">
+                <label>Username <input type="text" id="login-username" required autocomplete="username"></label>
+                <label>Password <input type="password" id="login-password" required autocomplete="current-password"></label>
+                <button class="btn btn-primary" type="submit" id="login-btn" style="width:100%;">Masuk</button>
+            </form>
+            <div id="login-message" class="feedback" style="display:none;"></div>
+            <p class="micro" style="margin-top:1rem;"><a href="index.html">← Kembali ke halaman pembelajaran</a></p>
+        </div>
+    </div>
+
+    <!-- DASHBOARD VIEW -->
+    <div id="dashboard-view" style="display:none;">
+        <div class="admin-header">
+            <div>
+                <h1>📊 Dashboard Admin</h1>
+                <div class="admin-user" id="admin-username"></div>
+            </div>
+            <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+                <button class="btn btn-ghost btn-sm" id="refresh-btn">⟳ Refresh</button>
+                <button class="btn btn-outline btn-sm" id="logout-btn">Logout</button>
+            </div>
+        </div>
+
+        <div class="stat-grid">
+            <div class="stat-card"><div class="label">Total Kunjungan</div><div class="value" id="stat-visits">—</div></div>
+            <div class="stat-card"><div class="label">Total Exit Ticket</div><div class="value" id="stat-submissions">—</div></div>
+            <div class="stat-card"><div class="label">Rata-rata Skor</div><div class="value" id="stat-average">—</div></div>
+            <div class="stat-card"><div class="label">Jumlah Kelas</div><div class="value" id="stat-classes">—</div></div>
+        </div>
+
+        <div class="reflection-summary" id="confidence-summary"></div>
+
+        <h2 class="section-title" style="font-size:1.15rem;margin-top:2rem;">📋 Hasil Exit Ticket</h2>
+        <div class="toolbar">
+            <input type="search" id="search-name" placeholder="Cari nama murid...">
+            <select id="filter-class"><option value="">Semua Kelas</option></select>
+            <input type="date" id="filter-date">
+            <select id="sort-by">
+                <option value="submitted_desc">Terbaru</option>
+                <option value="submitted_asc">Terlama</option>
+                <option value="score_desc">Skor tertinggi</option>
+                <option value="score_asc">Skor terendah</option>
+            </select>
+            <button class="btn btn-outline btn-sm" id="export-csv">⬇ Ekspor CSV</button>
+        </div>
+
+        <div class="admin-table-wrap">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>#</th><th>Nama</th><th>Kelas</th><th>Tanggal</th>
+                        <th>Waktu Kirim</th><th>Skor /8</th><th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                    <tr><td colspan="7" class="empty-state">Memuat data...</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="pagination" id="pagination"></div>
+    </div>
+
+</div>
+
+<div class="modal-backdrop" id="detail-modal" role="dialog" aria-modal="true">
+    <div class="modal-content">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;">
+            <h3 id="detail-title">Detail Murid</h3>
+            <button class="btn btn-ghost btn-sm" id="close-detail">Tutup</button>
+        </div>
+        <div id="detail-body"></div>
+    </div>
+</div>
+
+<div class="toast-container" id="toast-container" aria-live="polite"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>

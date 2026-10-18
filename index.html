@@ -1,163 +1,325 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>IPO LAB — Sistem Komputer</title>
-<link rel="stylesheet" href="style.css">
+<title>Sistem Komputer: Dari Input ke Output — Informatika Fase E</title>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-<nav class="nav">
-<div class="navin">
- <div class="brand" onclick="go('home')">
-  <div class="brandmark"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><rect x="5" y="5" width="14" height="14" rx="3"/><path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3M9 9h6v6H9z"/></svg></div>
-  <div><div class="brandname">IPO LAB</div><div class="brandsub">Sistem Komputer</div></div>
- </div>
- <button class="navtoggle" onclick="toggleMenu()" aria-label="Buka menu">☰</button>
- <div class="navlinks" id="navlinks">
-  <button class="navlink active" data-page="home" onclick="go('home')">⌂ <span>Beranda</span></button>
-  <button class="navlink" data-page="materi" onclick="go('materi')">▣ <span>Materi</span></button>
-  <button class="navlink" data-page="simulasi" onclick="go('simulasi')">▹ <span>Simulasi</span></button>
-  <button class="navlink" data-page="kuis" onclick="go('kuis')">◎ <span>Kuis</span></button>
-  <button class="motion" onclick="toggleMotion()">✣ <span id="motionText">Reduce Motion</span></button>
- </div>
-</div>
-</nav>
+<header class="site-header">
+    <div class="header-inner">
+        <a class="brand" href="#" onclick="return false;">
+            <span class="brand-logo" aria-hidden="true">💻</span>
+            <span class="brand-text">Sistem Komputer</span>
+        </a>
+        <nav class="nav" id="main-nav" aria-label="Tab slide">
+            <button class="nav-tab active" data-slide="0" aria-current="page">Beranda</button>
+            <button class="nav-tab" data-slide="1">Pemantik</button>
+            <button class="nav-tab" data-slide="2">Tujuan</button>
+            <button class="nav-tab" data-slide="3">Stimulus</button>
+            <button class="nav-tab" data-slide="4">Aktivitas</button>
+            <button class="nav-tab" data-slide="5">Alur IPO</button>
+            <button class="nav-tab" data-slide="6">Exit Ticket</button>
+            <button class="nav-tab" data-slide="7">Profil</button>
+        </nav>
+        <div class="header-actions">
+            <select id="theme-select" aria-label="Pilih tema tampilan">
+                <option value="light">Terang · Biru</option>
+                <option value="light-purple">Terang · Ungu</option>
+                <option value="dark">Gelap · Biru</option>
+                <option value="dark-purple">Gelap · Ungu</option>
+            </select>
+        </div>
+    </div>
+</header>
 
-<div id="home" class="page active">
-<div class="wrap">
-<section class="hero">
- <div>
-  <div class="eyebrow">LABORATORIUM VIRTUAL SISTEM KOMPUTER</div>
-  <h1>I LOVE YOU ... Bagaimana<br>Komputer Bekerja?</h1>
-  <div class="flowtext"><span class="i">INPUT</span><span class="arr">→</span><span class="p">PROSES</span><span class="arr">→</span><span class="o">OUTPUT</span></div>
-  <p>Pelajari bagaimana komputer menerima data, mengolahnya, dan menghasilkan informasi melalui simulasi interaktif.</p>
-  <div class="buttons"><button class="btn primary" onclick="go('materi')">🚀 Mulai Belajar</button><button class="btn secondary" onclick="go('simulasi')">▹ Coba Simulasi</button></div>
- </div>
- <div class="visual"><div class="visualrow">
-  <div class="vitem"><div class="vicon vi">⌨</div><div class="vlabel">INPUT</div><div class="vname">Keyboard</div></div>
-  <div class="connector"></div>
-  <div class="vitem"><div class="vicon vp">▣</div><div class="vlabel">PROSES</div><div class="vname">CPU</div></div>
-  <div class="connector"></div>
-  <div class="vitem"><div class="vicon vo">▱</div><div class="vlabel">OUTPUT</div><div class="vname">Monitor</div></div>
- </div></div>
-</section>
+<div class="slides-wrapper" id="slides-wrapper">
 
-<section>
-<div class="sectiontitle"><h2>Kenali IPO</h2><h2 style="font-size:42px">Tiga Tahap Kerja Komputer</h2><p>Setiap tugas yang dikerjakan komputer selalu melewati tiga tahap ini. Ketuk kartu untuk melihat contoh perangkatnya.</p></div>
-<div class="cards">
- <div class="card"><div class="num">01</div><h3 style="color:#35e8f1">INPUT</h3><p>Data atau perintah yang dimasukkan pengguna ke komputer.</p><button class="linkbtn" onclick="go('materi');">Lihat contoh →</button></div>
- <div class="card"><div class="num">02</div><h3 style="color:#b59aff">PROSES</h3><p>Tahap ketika data diolah berdasarkan instruksi komputer.</p><button class="linkbtn" onclick="go('materi');">Lihat contoh →</button></div>
- <div class="card"><div class="num">03</div><h3 style="color:#82baff">OUTPUT</h3><p>Hasil pengolahan data yang diberikan kepada pengguna.</p><button class="linkbtn" onclick="go('materi');">Lihat contoh →</button></div>
-</div>
-</section>
-</div>
+    <!-- SLIDE 0: BERANDA -->
+    <section class="slide active" id="slide-beranda" aria-label="Beranda">
+        <div class="container hero-grid">
+            <div class="hero-copy">
+                <span class="badge">Informatika • Fase E / Kelas X</span>
+                <h1>Sistem Komputer: <span class="accent">Dari Input ke Output</span></h1>
+                <p class="subtitle">Komponen Komputer dan Alur Input–Process–Output (IPO) pada Arsitektur Von Neumann</p>
+                <p class="lead">Pelajari bagaimana keyboard, CPU, RAM, monitor, dan penyimpanan bekerja sama mengolah data — dari sebuah ketukan tombol hingga dokumen tersimpan.</p>
+                <div class="hero-cta">
+                    <button class="btn btn-primary" data-goto="1">Mulai Belajar →</button>
+                    <button class="btn btn-ghost" data-goto="6">Langsung ke Exit Ticket</button>
+                </div>
+            </div>
+            <div class="hero-illustration" aria-hidden="true">
+                <div class="device device-monitor"><span>🖥️</span></div>
+                <div class="device device-cpu"><span>🧠</span></div>
+                <div class="device device-keyboard"><span>⌨️</span></div>
+                <div class="device device-disk"><span>💾</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 1: PEMANTIK -->
+    <section class="slide" id="slide-pemantik" aria-label="Pertanyaan pemantik">
+        <div class="container">
+            <h2 class="section-title">💡 Pertanyaan Pemantik</h2>
+            <p class="section-sub">Renungkan pertanyaan berikut sebelum mempelajari materi lebih lanjut.</p>
+            <div class="pemantik-grid">
+                <article class="pemantik-card">
+                    <div class="pemantik-icon">⌨️➡️🖥️</div>
+                    <h3>Ketika kalian mengetik menggunakan keyboard, bagaimana teks dapat muncul di monitor?</h3>
+                    <p class="hint">Pikirkan tentang perjalanan sinyal dari tombol yang ditekan sampai piksel yang menyala di layar.</p>
+                </article>
+                <article class="pemantik-card">
+                    <div class="pemantik-icon">🧠 vs 📀</div>
+                    <h3>Menurut kalian, apa perbedaan fungsi CPU dan RAM?</h3>
+                    <p class="hint">Keduanya bekerja "di dalam" komputer, tetapi perannya berbeda.</p>
+                </article>
+                <article class="pemantik-card">
+                    <div class="pemantik-icon">💾</div>
+                    <h3>Apa yang terjadi ketika tombol Simpan ditekan?</h3>
+                    <p class="hint">Ke mana data pergi setelah kita menekan ikon disket?</p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 2: TUJUAN -->
+    <section class="slide" id="slide-tujuan" aria-label="Tujuan pembelajaran">
+        <div class="container">
+            <h2 class="section-title">🎯 Tujuan Pembelajaran</h2>
+            <div class="tujuan-grid">
+                <article class="tujuan-card">
+                    <span class="tujuan-num">1</span>
+                    <h3>Identifikasi Komponen</h3>
+                    <p>Melalui pengamatan komponen sistem komputer (C), murid (A) mampu <strong>mengidentifikasi komponen utama</strong> yang berperan dalam pengolahan data (B) dengan tepat (D).</p>
+                </article>
+                <article class="tujuan-card">
+                    <span class="tujuan-num">2</span>
+                    <h3>Fungsi Komponen Von Neumann</h3>
+                    <p>Melalui pengamatan dan diskusi menggunakan LKPD (C), murid (A) mampu <strong>menjelaskan fungsi CPU, ALU, CU, register, memori utama, perangkat input/output, dan penyimpanan sekunder</strong> pada arsitektur Von Neumann (B) dengan benar (D).</p>
+                </article>
+                <article class="tujuan-card">
+                    <span class="tujuan-num">3</span>
+                    <h3>Mekanisme IPO</h3>
+                    <p>Melalui analisis contoh aktivitas mengetik, menampilkan, dan menyimpan dokumen (C), murid (A) mampu <strong>menjelaskan mekanisme Input–Process–Output (IPO)</strong> (B) secara runtut dan logis (D).</p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 3: STIMULUS -->
+    <section class="slide" id="slide-stimulus" aria-label="Stimulus video">
+        <div class="container">
+            <h2 class="section-title">🎬 Stimulation — Demonstrasi</h2>
+            <p class="section-sub">Amati bagaimana sebuah ketikan berubah menjadi teks di layar, lalu tersimpan.</p>
+            <div class="video-wrap">
+                <div class="video-frame" id="video-frame"></div>
+            </div>
+            <div class="sim-fallback" id="sim-fallback">
+                <div class="sim-fallback-head">
+                    <span class="badge badge-soft">Fallback Simulasi</span>
+                    <button class="btn btn-ghost btn-sm" id="fallback-reset">Ulangi Simulasi</button>
+                </div>
+                <div class="fallback-screen" id="fallback-screen" aria-live="polite">
+                    <div class="fallback-monitor" id="fallback-monitor"></div>
+                    <div class="fallback-status" id="fallback-status">Siap mengetik...</div>
+                </div>
+                <button class="btn btn-primary" id="fallback-play">▶ Jalankan Simulasi Otomatis</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 4: DRAG & DROP -->
+    <section class="slide" id="slide-dragdrop" aria-label="Aktivitas komponen">
+        <div class="container">
+            <h2 class="section-title">🧩 Aktivitas: Kelompokkan Komponen Komputer</h2>
+            <p class="section-sub">Tarik kartu ke kategori yang tepat — atau ketuk kartu lalu ketuk kategori (khusus layar sentuh).</p>
+
+            <div class="progress-row">
+                <span class="progress-label">Progres</span>
+                <div class="progress-track"><div class="progress-fill" id="group-progress-bar"></div></div>
+                <span id="group-progress" class="progress-count">0 / 9</span>
+                <button class="btn btn-ghost btn-sm" id="group-reset">Reset</button>
+            </div>
+
+            <div class="component-pool" id="component-pool" aria-label="Kartu komponen"></div>
+
+            <div class="category-zones" id="category-zones">
+                <div class="category-zone" data-category="input"><h4>Input</h4><div class="dropped-items"></div></div>
+                <div class="category-zone" data-category="output"><h4>Output</h4><div class="dropped-items"></div></div>
+                <div class="category-zone" data-category="proses"><h4>Proses</h4><div class="dropped-items"></div></div>
+                <div class="category-zone" data-category="memori"><h4>Memori Utama</h4><div class="dropped-items"></div></div>
+                <div class="category-zone" data-category="storage"><h4>Penyimpanan Sekunder</h4><div class="dropped-items"></div></div>
+                <div class="category-zone" data-category="software"><h4>Software</h4><div class="dropped-items"></div></div>
+            </div>
+
+            <div class="feedback success" id="group-success" style="display:none;">🎉 Hebat! Semua komponen sudah ditempatkan dengan benar.</div>
+
+            <div class="bank-data">
+                <button class="btn btn-outline" id="bank-data-toggle" aria-expanded="false">📚 Lihat Bank Data Perangkat Komputer</button>
+                <div class="bank-data-content" id="bank-data-content" hidden>
+                    <p class="section-sub">Ringkasan komponen berdasarkan kelompoknya.</p>
+                    <div id="bank-data-body"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 5: ALUR IPO -->
+    <section class="slide" id="slide-alur" aria-label="Alur IPO">
+        <div class="container">
+            <h2 class="section-title">⚙️ Alur Kerja Komputer (IPO)</h2>
+            <p class="section-sub">Susun komponen ke slot yang benar terlebih dahulu, lalu jalankan simulasi.</p>
+
+            <div class="ipo-builder">
+                <div class="ipo-slots" id="ipo-slots">
+                    <div class="ipo-slot" data-position="input"><div class="slot-label">INPUT</div><div class="slot-drop"></div></div>
+                    <div class="ipo-arrow">➡</div>
+                    <div class="ipo-slot" data-position="process"><div class="slot-label">PROCESS</div><div class="slot-drop"></div></div>
+                    <div class="ipo-arrow">➡</div>
+                    <div class="ipo-slot" data-position="output"><div class="slot-label">OUTPUT</div><div class="slot-drop"></div></div>
+                    <div class="ipo-arrow">➡</div>
+                    <div class="ipo-slot" data-position="storage"><div class="slot-label">STORAGE</div><div class="slot-drop"></div></div>
+                </div>
+
+                <div class="ipo-pool" id="ipo-pool" aria-label="Chip komponen"></div>
+
+                <div class="ipo-actions">
+                    <button class="btn btn-primary" id="ipo-check">Periksa Susunan</button>
+                    <button class="btn btn-ghost" id="ipo-reset">Reset Susunan</button>
+                </div>
+                <div id="ipo-feedback" class="feedback"></div>
+            </div>
+
+            <div class="ipo-simulation" id="ipo-simulation" style="display:none;">
+                <h3>🧪 Simulasi Mengetik & Menyimpan</h3>
+                <p class="section-sub">Ketik maksimal 15 karakter, atau coba operasi aritmatika seperti <code>10+2</code>.</p>
+                <div class="sim-controls">
+                    <input type="text" id="sim-input" maxlength="15" placeholder="Contoh: AKU  atau  10+2" aria-label="Input simulasi">
+                    <button class="btn btn-primary" id="sim-run">Jalankan Simulasi</button>
+                </div>
+                <div class="sim-steps" id="sim-steps" aria-live="polite"></div>
+                <div class="monitor-stage">
+                    <div class="monitor-bezel"><div class="monitor-display" id="monitor-display"></div></div>
+                    <div class="monitor-stand"></div>
+                </div>
+                <div class="ipo-actions">
+                    <button class="btn btn-outline" id="sim-save" style="display:none;">💾 Simpan Dokumen</button>
+                    <button class="btn btn-ghost" id="sim-reset">Reset Simulasi</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 6: EXIT TICKET -->
+    <section class="slide" id="slide-exit" aria-label="Exit ticket dan refleksi">
+        <div class="container">
+            <h2 class="section-title">📝 Exit Ticket + Refleksi Murid</h2>
+            <p class="section-sub"><strong>Sistem Komputer • Input–Process–Output (IPO) pada Arsitektur Von Neumann</strong><br>Informatika • Fase E / Kelas X</p>
+            <p class="notice">Bagian A dikerjakan secara mandiri untuk memeriksa pemahaman. Setelah itu, isi Bagian B dengan jujur sebagai refleksi belajar.</p>
+
+            <form id="exit-form" class="exit-form" novalidate>
+                <fieldset class="form-block">
+                    <legend>Identitas Murid</legend>
+                    <div class="field-row">
+                        <label>Nama <input type="text" id="student-name" required autocomplete="name"></label>
+                        <label>Kelas <input type="text" id="class-name" required placeholder="Contoh: X IPA 1"></label>
+                        <label>Tanggal <input type="date" id="activity-date" required></label>
+                    </div>
+                </fieldset>
+
+                <fieldset class="form-block">
+                    <legend>Bagian A — Exit Ticket (4 menit)</legend>
+                    <div class="question">
+                        <h4>Soal 1. Identifikasi Komponen (2 Poin)</h4>
+                        <p>Tuliskan nama komponen yang paling sesuai.</p>
+                        <div class="field-row">
+                            <label>A. Memasukkan teks ke komputer. <input type="text" id="q1-keyboard" required></label>
+                            <label>B. Menampilkan informasi yang bisa dibaca/dilihat. <input type="text" id="q1-monitor" required></label>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <h4>Soal 2. Fungsi Komponen Pemrosesan (2 Poin)</h4>
+                        <p>Pasangkan komponen dengan fungsi yang tepat.</p>
+                        <div class="pair-grid">
+                            <label>CPU<select id="q2-cpu" required><option value="">— pilih —</option><option value="A">A. Operasi aritmetika & logika</option><option value="B">B. Menyimpan data sementara</option><option value="C">C. Menjalankan instruksi & mengolah data</option><option value="D">D. Mengatur/mengoordinasikan instruksi</option></select></label>
+                            <label>ALU<select id="q2-alu" required><option value="">— pilih —</option><option value="A">A. Operasi aritmetika & logika</option><option value="B">B. Menyimpan data sementara</option><option value="C">C. Menjalankan instruksi & mengolah data</option><option value="D">D. Mengatur/mengoordinasikan instruksi</option></select></label>
+                            <label>CU<select id="q2-cu" required><option value="">— pilih —</option><option value="A">A. Operasi aritmetika & logika</option><option value="B">B. Menyimpan data sementara</option><option value="C">C. Menjalankan instruksi & mengolah data</option><option value="D">D. Mengatur/mengoordinasikan instruksi</option></select></label>
+                            <label>Register<select id="q2-register" required><option value="">— pilih —</option><option value="A">A. Operasi aritmetika & logika</option><option value="B">B. Menyimpan data sementara</option><option value="C">C. Menjalankan instruksi & mengolah data</option><option value="D">D. Mengatur/mengoordinasikan instruksi</option></select></label>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <h4>Soal 3. RAM atau SSD/HDD? (2 Poin)</h4>
+                        <div class="radio-list">
+                            <label class="radio-card"><input type="radio" name="q3" value="A" required> A. RAM menampung data/instruksi yang sedang digunakan, sedangkan SSD/HDD menyimpan berkas untuk digunakan kembali.</label>
+                            <label class="radio-card"><input type="radio" name="q3" value="B"> B. RAM dan SSD/HDD mempunyai fungsi yang sama.</label>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <h4>Soal 4. Alur IPO (2 Poin)</h4>
+                        <p class="inline-cloze">"Saat mengetik, teks dimasukkan melalui <input type="text" id="q4-input" required>, diproses oleh <input type="text" id="q4-process" required>, lalu ditampilkan melalui <input type="text" id="q4-output" required>. Agar dapat dibuka kembali, dokumen disimpan pada <input type="text" id="q4-storage" required>."</p>
+                    </div>
+                </fieldset>
+
+                <fieldset class="form-block">
+                    <legend>Bagian B — Refleksi Murid (1 menit)</legend>
+                    <p class="section-sub">Refleksi ini bukan untuk mencari jawaban benar atau salah.</p>
+                    <label>1. Satu hal yang sekarang saya pahami tentang komponen komputer atau alur IPO:<textarea id="reflection-understood" rows="2" required></textarea></label>
+                    <label>2. Satu hal yang masih membingungkan atau ingin saya tanyakan:<textarea id="reflection-confusing" rows="2"></textarea></label>
+                    <label>3. Seberapa yakin saya memahami materi hari ini?
+                        <select id="confidence-level" required>
+                            <option value="">— pilih —</option>
+                            <option value="Sudah paham">Sudah paham</option>
+                            <option value="Cukup paham, masih perlu latihan">Cukup paham, masih perlu latihan</option>
+                            <option value="Masih perlu bantuan">Masih perlu bantuan</option>
+                        </select>
+                    </label>
+                </fieldset>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary btn-lg" id="submit-btn">Kirim Exit Ticket dan Refleksi</button>
+                    <p class="micro">Refleksi tidak dinilai benar/salah. Skor final dihitung oleh sistem.</p>
+                </div>
+
+                <div id="exit-score-display" class="score-display" style="display:none;" aria-live="polite"></div>
+            </form>
+        </div>
+    </section>
+
+    <!-- SLIDE 7: PROFIL -->
+    <section class="slide" id="slide-profil" aria-label="Profil pemilik">
+        <div class="container">
+            <h2 class="section-title">👤 Profil Pemilik Website</h2>
+            <div class="profile-card">
+                <div class="profile-photo" id="owner-photo" aria-hidden="true"></div>
+                <div class="profile-info">
+                    <h3 id="owner-name">Nama Pemilik Website</h3>
+                    <p class="role" id="owner-role">Guru Informatika</p>
+                    <p class="school" id="owner-school">Nama Sekolah</p>
+                    <p id="owner-description">Deskripsi singkat pemilik website.</p>
+                    <p class="purpose" id="owner-purpose"></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
 </div>
 
-<div id="materi" class="page">
-<div class="wrap">
-<section>
-<div class="sectiontitle"><div class="eyebrow">MATERI PEMBELAJARAN</div><h2 style="margin-top:20px">Perangkat Komputer & Fungsinya</h2><p>Ketuk setiap kartu untuk membaca deskripsi dan contoh penggunaan perangkat.</p>
-<div class="progressbar"><span id="materialProgress"></span></div><p id="materialStatus" style="font-size:13px;margin-top:8px">0 dari 3 aktivitas selesai</p></div>
+<!-- FOOTER NAVIGASI SLIDE -->
+<footer class="slide-footer" role="navigation" aria-label="Navigasi slide">
+    <button class="btn btn-ghost btn-sm" id="slide-prev" aria-label="Slide sebelumnya">← Sebelumnya</button>
+    <div class="slide-dots" id="slide-dots" role="tablist" aria-label="Indikator slide"></div>
+    <span class="slide-indicator" id="slide-indicator">1 / 8</span>
+    <button class="btn btn-primary btn-sm" id="slide-next" aria-label="Slide berikutnya">Selanjutnya →</button>
+</footer>
 
-<div id="materialCards">
- <div class="activity" data-cat="input" style="margin-top:25px"><div class="activityhead"><div><span class="tag">01</span><h3>INPUT</h3><small>Memasukkan data / perintah</small></div><span style="color:#35e8f1;font-size:30px">⌨</span></div>
- <div class="devicegrid" id="inputDevices"></div><div class="detail" id="inputDetail"></div></div>
- <div class="activity" data-cat="proses" style="margin-top:22px"><div class="activityhead"><div><span class="tag">02</span><h3>PROSES</h3><small>Mengolah data</small></div><span style="color:#b59aff;font-size:30px">⚙</span></div>
- <div class="devicegrid" id="processDevices"></div><div class="detail" id="processDetail"></div></div>
- <div class="activity" data-cat="output" style="margin-top:22px"><div class="activityhead"><div><span class="tag">03</span><h3>OUTPUT</h3><small>Menghasilkan informasi</small></div><span style="color:#82baff;font-size:30px">▣</span></div>
- <div class="devicegrid" id="outputDevices"></div><div class="detail" id="outputDetail"></div></div>
-</div>
-</section>
-</div>
-</div>
+<div class="toast-container" id="toast-container" aria-live="polite"></div>
 
-<div id="simulasi" class="page">
-<div class="wrap"><section>
-<div class="sectiontitle"><div class="eyebrow">SIMULASI INTERAKTIF</div><h2 style="margin-top:20px">Lihat Aliran Data Secara Langsung</h2><p>Pilih perangkat input, lalu jalankan simulasi untuk melihat perjalanan data dari input, proses, hingga output.</p></div>
-
-<div class="simpanel">
-<h3>Simulasi IPO perangkat</h3><h2>Pilih Input dan Output</h2><p style="color:#8fa3b8">Simulasi sederhana untuk melihat aliran data dari perangkat input, CPU, hingga perangkat output.</p>
-<div class="simselects">
- <div class="field"><label>Perangkat input</label><select id="inputSelect"></select></div>
- <div class="field"><label>Perangkat output yang kompatibel</label><select id="outputSelect"></select></div>
-</div>
-<div class="ipo-stage">
- <div class="stagebox"><div class="stageicon" id="stageInIcon">⌨</div><div class="cap" style="color:#35e8f1">1. INPUT</div><div class="name" id="stageInName">Keyboard</div></div><div class="arrowbig">→</div>
- <div class="stagebox"><div class="stageicon">⚙</div><div class="cap" style="color:#b59aff">2. PROSES</div><div class="name">CPU</div></div><div class="arrowbig">→</div>
- <div class="stagebox"><div class="stageicon" id="stageOutIcon">▣</div><div class="cap" style="color:#82baff">3. OUTPUT</div><div class="name" id="stageOutName">Monitor</div></div>
-</div>
-<div class="actions"><button class="action run" onclick="runDeviceSimulation()">▶ Jalankan Simulasi IPO</button><button class="action reset" onclick="resetDeviceSimulation()">↻ Reset</button></div>
-<div id="deviceSimMessage" style="color:#8ea3b8;margin-top:12px">Siap. Pilih perangkat lalu jalankan simulasi.</div>
-</div>
-
-<div class="simpanel" style="margin-top:25px">
-<div class="cpuhead"><div><h2>Simulator CPU interaktif</h2><p style="color:#8fa3b8">Ketik teks untuk melihat aliran karakter, atau operasi matematika seperti 10+4, 10-2, 10*8, atau 10/2.</p></div><span class="tag">CU • ALU • MDR • ACC</span></div>
-<div class="field"><label>Input data</label><input id="cpuInput" maxlength="30" placeholder="Contoh: AKU, 10+4, 10-2, 10*8, atau 10/2"></div>
-<div class="actions"><button class="action run" onclick="runCpu()">▶ Jalankan Simulasi</button><button class="action reset" onclick="resetCpu()">↻ Reset</button></div>
-<p style="font-size:13px;color:#70869c">Teks maksimal 12 karakter. Operasi hitung hanya menerima satu operasi.</p>
-<div class="cpu"><div class="cpuhead"><h3>Jejak eksekusi CPU</h3><span id="stepCount" class="tag">0/4 langkah</span></div><h3 style="margin-top:18px">Langkah demi langkah</h3><div class="steps"><div class="step" id="s1">1. CU<br><small>Ambil instruksi</small></div><div class="step" id="s2">2. MDR<br><small>Ambil data</small></div><div class="step" id="s3">3. ALU<br><small>Proses</small></div><div class="step" id="s4">4. ACC<br><small>Simpan hasil</small></div></div><div class="monitor" id="monitor">_</div><p style="text-align:center;color:#70869c;font-size:13px">Output visual dari Register ACC</p></div>
-</div>
-</section></div>
-</div>
-
-<div id="kuis" class="page">
-<div class="wrap"><section>
-<div class="sectiontitle"><div class="eyebrow">UJI PEMAHAMAN</div><h2 style="margin-top:20px">Kuis Interaktif</h2><p>Pilih mode kuis: jawab soal pilihan ganda, atau seret perangkat ke kategori yang tepat.</p></div>
-
-<div class="quizmodes">
- <button class="modebtn active" data-mode="mc" onclick="setQuizMode('mc')">📝 Pilihan Ganda</button>
- <button class="modebtn" data-mode="drag" onclick="setQuizMode('drag')">🧲 Klasifikasi Drag &amp; Drop</button>
-</div>
-
-<div class="quizbox" id="mcMode">
- <div id="quizStart"><h2 style="text-align:center">Siap menguji kemampuanmu?</h2><p style="text-align:center;color:#8fa3b8">Masukkan nama siswa sebelum memulai kuis.</p><div class="nameform"><input id="studentName" placeholder="Contoh: Siti Aminah" maxlength="30"><button class="start" onclick="startQuiz()">Mulai Kuis</button></div></div>
- <div class="quizgame" id="quizGame"><div class="quizmeta"><span id="qNumber">Soal 1 dari 8</span><span id="qScore">Skor: 0</span></div><div class="progressbar"><span id="quizProgress"></span></div><div class="question" id="question"></div><div class="options" id="options"></div><p id="quizFeedback" style="min-height:25px;font-weight:800"></p><button class="next" id="nextBtn" onclick="nextQuestion()" style="display:none">Soal Berikutnya →</button></div>
- <div class="resultbox" id="quizResult"><div class="score" id="finalScore">0</div><h2 id="finalTitle"></h2><p id="finalText" style="color:#8fa3b8"></p><button class="start" onclick="restartQuiz()">↻ Ulangi Kuis</button></div>
- <div class="leader"><h3>Leaderboard</h3><p style="color:#70869c;font-size:13px">10 skor tertinggi, tersimpan di Supabase.</p><div class="leadertablewrap"><table><thead><tr><th>#</th><th>Nama</th><th>Skor</th><th>Benar</th></tr></thead><tbody id="leaderBody"></tbody></table></div></div>
-</div>
-
-<div class="quizbox" id="dragMode" style="display:none">
- <div class="dragheader">
-  <div>
-   <h2 style="margin:0">Seret perangkat ke kategori yang benar</h2>
-   <p style="color:#8fa3b8;margin-top:8px">Seret setiap kartu ke kotak INPUT, PROSES, atau OUTPUT yang sesuai. Jawaban salah akan kembali ke tumpukan.</p>
-  </div>
-  <div class="dragstats"><span class="tag" id="dragTimer">00:00</span><span class="tag" id="dragScoreTag">0/9 benar</span></div>
- </div>
- <div class="progressbar"><span id="dragProgress"></span></div>
- <div class="dragpool" id="dragPool"></div>
- <div class="dropzones">
-  <div class="dropzone" data-cat="input" id="zoneInput">
-   <div class="zoneicon">⌨</div><div class="zonelabel" style="color:#35e8f1">INPUT</div><div class="zonecount" id="zoneInputCount">0</div>
-   <div class="zonechips" id="zoneInputChips"></div>
-  </div>
-  <div class="dropzone" data-cat="proses" id="zoneProses">
-   <div class="zoneicon">⚙</div><div class="zonelabel" style="color:#b59aff">PROSES</div><div class="zonecount" id="zoneProsesCount">0</div>
-   <div class="zonechips" id="zoneProsesChips"></div>
-  </div>
-  <div class="dropzone" data-cat="output" id="zoneOutput">
-   <div class="zoneicon">▣</div><div class="zonelabel" style="color:#82baff">OUTPUT</div><div class="zonecount" id="zoneOutputCount">0</div>
-   <div class="zonechips" id="zoneOutputChips"></div>
-  </div>
- </div>
- <div class="actions"><button class="action reset" onclick="resetDragGame()">↻ Acak Ulang</button></div>
- <div class="dragresult" id="dragResult">
-  <div class="score">🎉</div>
-  <h2>Semua perangkat berhasil diklasifikasikan!</h2>
-  <p id="dragFinalText" style="color:#8fa3b8"></p>
-  <button class="start" onclick="resetDragGame()">↻ Main Lagi</button>
- </div>
-</div>
-</section></div>
-</div>
-
-<div class="toast" id="toast"></div>
-<footer><div class="footerbrand">IPO LAB</div>Media Pembelajaran Informatika<br>Input • Proses • Output<br><small>Media pembelajaran interaktif Sistem Komputer untuk siswa kelas X SMA.</small></footer>
-
-<!-- Supabase JS client (UMD build) -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js"></script>
 <script src="app.js"></script>
 </body>
