@@ -461,7 +461,11 @@ textarea { resize: vertical; min-height: 70px; }
 }
 .profile-photo {
     width: 96px; height: 96px; border-radius: 50%; flex-shrink: 0;
-    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    background: linear-gradient(135deg, var(--accent), var(--accent-2)); 
+	background-image: url("zia.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     color: #fff; display: flex; align-items: center; justify-content: center;
     font-size: 2.2rem; font-weight: 700;
 }
