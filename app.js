@@ -1030,7 +1030,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	setTimeout(() => {
 	  const badge = document.getElementById('nl-badge');
 		if (badge) {
-		  badge.style.display = 'none';
+		  document.getElementById('nl-badge').style.display = 'none';
 		}
-	}, 2000);
+	}, 5000);
 });
