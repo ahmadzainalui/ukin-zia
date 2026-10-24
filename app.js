@@ -380,11 +380,11 @@ const CATEGORY_LABELS = {
 };
 
 const OWNER_PROFILE = {
-    name: 'Nama Pemilik Website',
-    role: 'Guru Informatika',
-    school: 'Nama Sekolah',
-    description: 'Deskripsi singkat pemilik website.',
-    photo: '',
+    name: 'Fauziah Anwar',
+    role: 'Calon Guru Informatika',
+    school: 'Universitas Pendidikan Indonesia',
+    description: 'Mahasiswa PPG Prajabatan UPI yang berkomitmen menjadi guru yang menghadirkan pembelajaran Informatika yang inklusif, bermakna, dan mendorong setiap siswa berkembang sesuai potensinya.',
+    photo: 'zia.png',
     purpose: 'Media pembelajaran interaktif Sistem Komputer untuk membantu murid memahami alur Input–Process–Output pada arsitektur Von Neumann.'
 };
 
@@ -1027,4 +1027,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (m) m.textContent = ''; if (s) s.textContent = 'Siap mengetik...';
     });
     trackVisit();
+	setTimeout(() => {
+	  const badge = document.getElementById('nl-badge');
+		if (badge) {
+		  badge.style.display = 'none';
+		}
+	}, 2000);
 });
