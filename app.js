@@ -1034,6 +1034,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		// Condition met: Element found, hide it
 		badge.style.display = 'none';
 	  } else {
+		  console.log("finder",badge);
 		// Condition not met: Wait 1000ms and try again
 		setTimeout(waitForBadge, 1000);
 	  }
