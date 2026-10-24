@@ -1027,10 +1027,15 @@ document.addEventListener('DOMContentLoaded', () => {
         if (m) m.textContent = ''; if (s) s.textContent = 'Siap mengetik...';
     });
     trackVisit();
-	setTimeout(() => {
+	(function waitForBadge() {
 	  const badge = document.getElementById('nl-badge');
-		if (badge) {
-		  document.getElementById('nl-badge').style.display = 'none';
-		}
-	}, 5000);
+	  
+	  if (badge) {
+		// Condition met: Element found, hide it
+		badge.style.display = 'none';
+	  } else {
+		// Condition not met: Wait 1000ms and try again
+		setTimeout(waitForBadge, 1000);
+	  }
+	})();
 });

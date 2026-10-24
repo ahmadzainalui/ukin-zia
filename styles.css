@@ -513,7 +513,3 @@ textarea { resize: vertical; min-height: 70px; }
     .slide-indicator { display: none; }
     .header-actions select { max-width: 120px; }
 }
-
-.nl-badge{
-	display: none!important;
-}
