@@ -388,7 +388,7 @@ const OWNER_PROFILE = {
     purpose: 'Media pembelajaran interaktif Sistem Komputer untuk membantu murid memahami alur Input–Process–Output pada arsitektur Von Neumann.'
 };
 
-const VIDEO_EMBED_URL = 'https://youtu.be/AlMYyr8Z7co'; // Isi URL embed YouTube bila tersedia.
+const VIDEO_EMBED_URL = 'https://www.youtube.com/embed/AlMYyr8Z7co'; // Isi URL embed YouTube bila tersedia.
 
 // =========================================================
 // TOAST
