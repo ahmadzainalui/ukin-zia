@@ -154,7 +154,7 @@ button { cursor: pointer; }
    ===================================================== */
 .container { max-width: 1120px; margin: 0 auto; padding: 0 1.25rem; }
 .section-title { font-size: clamp(1.4rem, 2.5vw, 1.9rem); margin: 0 0 .5rem; letter-spacing: -.01em; }
-.section-sub { color: var(--muted); margin: 0 0 1.5rem; max-width: 70ch; }
+.section-sub { color: var(--muted); margin: 0 0 1.5rem; max-width: max-content; }
 .badge {
     display: inline-block; background: var(--accent-soft); color: var(--accent);
     padding: .3rem .8rem; border-radius: 999px; font-size: .8rem; font-weight: 600;
@@ -512,4 +512,38 @@ textarea { resize: vertical; min-height: 70px; }
     .profile-card { flex-direction: column; align-items: center; text-align: center; }
     .slide-indicator { display: none; }
     .header-actions select { max-width: 120px; }
+}
+
+/* Pastikan kotak kategori memanjang ke bawah */
+.category-zone {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Area drop memenuhi sisa ruang di dalam kotak */
+.dropped-items {
+    flex-grow: 1;
+    min-height: 80px; /* Menjaga tinggi minimal */
+    height: 100%;
+}
+
+/* Memastikan item yang sudah di-drop tidak bisa di-drag lagi */
+.component-card[draggable="false"] {
+    cursor: default;
+    opacity: 0.9;
+}
+
+/* Animasi Goyang untuk Tombol Simpan */
+@keyframes shake {
+  0% { transform: translate(1px, 1px) rotate(0deg); }
+  30% { transform: translate(3px, 2px) rotate(0deg); }
+  60% { transform: translate(-3px, 1px) rotate(0deg); }
+  80% { transform: translate(-1px, -1px) rotate(1deg); }
+  100% { transform: translate(1px, -2px) rotate(-1deg); }
+}
+
+.btn-shake {
+  animation: shake 0.6s infinite;
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 10px rgba(37, 99, 235, 0.4) !important;
 }

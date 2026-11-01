@@ -358,4 +358,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     } else {
         showView('login');
     }
+	
+	(function waitForBadge() {
+	  const badge = document.getElementById('nl-badge-frame');
+	  
+	  if (badge) {
+		// Condition met: Element found, hide it
+		badge.style.display = 'none';
+	  } else {
+		  console.log("finder",badge);
+		// Condition not met: Wait 1000ms and try again
+		setTimeout(waitForBadge, 1000);
+	  }
+	})();
 });
