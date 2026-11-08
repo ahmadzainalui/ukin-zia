@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="styles.css">
 <style>
 body {
-	overflow: auto !important; 
+	overflow: auto !important;
 	height: auto !important;
 }
 .admin-shell { max-width: 1180px; margin: 0 auto; padding: 1.5rem 1.25rem 3rem; }
@@ -38,8 +38,55 @@ body {
 .detail-block h4 { margin: 0 0 .5rem; font-size: .95rem; color: var(--accent); }
 .detail-block p { margin: .25rem 0; font-size: .9rem; white-space: pre-wrap; }
 .empty-state { padding: 2.5rem; text-align: center; color: var(--muted); }
-.score-input-group { display: flex; align-items: center; gap: 1rem; background: var(--surface-2); padding: 1rem; border-radius: var(--radius-sm); margin-top: 1rem; }
-.score-input-group input { width: 100px; padding: 0.5rem; font-size: 1.2rem; text-align: center; font-weight: bold; border: 2px solid var(--accent); border-radius: 8px; }
+
+/* ===== Form nilai per soal ===== */
+.score-input-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 1rem;
+    background: var(--surface-2);
+    padding: 1rem;
+    border-radius: var(--radius-sm);
+    margin-top: 1rem;
+}
+.score-input-group > div {
+    flex: 1;
+    min-width: 260px;
+}
+.score-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: .5rem;
+    margin-top: .5rem;
+}
+.score-grid label {
+    display: flex;
+    flex-direction: column;
+    gap: .25rem;
+    font-size: .8rem;
+    font-weight: 600;
+    color: var(--muted);
+    margin: 0;
+}
+.score-grid input {
+    width: 100%;
+    padding: .5rem .25rem;
+    font-size: 1.1rem;
+    text-align: center;
+    font-weight: 700;
+    border: 2px solid var(--accent);
+    border-radius: 8px;
+    background: var(--surface);
+    color: var(--text);
+}
+.score-grid input:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--accent-soft);
+}
+@media (max-width: 480px) {
+    .score-grid { grid-template-columns: repeat(2, 1fr); }
+}
 </style>
 </head>
 <body>
@@ -116,19 +163,27 @@ body {
             <h3 id="detail-title">Detail Murid</h3>
             <button class="btn btn-ghost btn-sm" id="close-detail">Tutup</button>
         </div>
-        
+
         <div id="detail-body"></div>
 
-        <!-- Form Update Nilai -->
+        <!-- Form Update Nilai per Soal (q1–q4) -->
         <div class="score-input-group">
             <div>
-                <strong style="display:block; font-size:0.9rem;">Input Nilai Manual (0-8):</strong>
-                <span class="micro">Estimasi sistem: <span id="est-score-label">0</span>/8</span>
+                <strong style="display:block; font-size:.9rem;">Input Nilai Manual per Soal (0–2 per soal):</strong>
+                <div class="score-grid">
+                    <label>Soal 1<input type="number" id="input-q1-score" min="0" max="2" step="0.5" value="0"></label>
+                    <label>Soal 2<input type="number" id="input-q2-score" min="0" max="2" step="0.5" value="0"></label>
+                    <label>Soal 3<input type="number" id="input-q3-score" min="0" max="2" step="0.5" value="0"></label>
+                    <label>Soal 4<input type="number" id="input-q4-score" min="0" max="2" step="0.5" value="0"></label>
+                </div>
+                <p class="micro" style="margin-top:.5rem;">
+                    Total: <strong id="total-score-label">0</strong> / 8 &nbsp;•&nbsp;
+                    Estimasi sistem: <span id="est-score-label">0</span>/8
+                </p>
             </div>
-            <input type="number" id="input-final-score" min="0" max="8" step="0.5">
             <button class="btn btn-primary" id="btn-save-score">Simpan Nilai</button>
         </div>
-        <p class="micro" id="save-status" style="margin-top:0.5rem; color:var(--success);"></p>
+        <p class="micro" id="save-status" style="margin-top:.5rem; color:var(--success);"></p>
     </div>
 </div>
 

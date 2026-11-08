@@ -1,6 +1,12 @@
 /* =========================================================
-   admin.js — Login custom (username/password) + dashboard
-   Referensi RPC: admin_get_submissions_ukin, admin_get_stats_ukin, admin_update_score
+   admin-ukin.js — Login custom (username/password) + dashboard
+   Referensi RPC:
+     - admin_verify_session
+     - admin_login / admin_logout
+     - admin_get_submissions_ukin
+     - admin_get_stats_ukin
+     - admin_update_score(text, bigint, numeric, numeric, numeric, numeric)
+       (nama sama seperti versi lama, tapi kini menerima 4 nilai q1..q4)
    ========================================================= */
 
 const $ = (id) => document.getElementById(id);
@@ -86,8 +92,10 @@ $('logout-btn')?.addEventListener('click', async () => {
 });
 
 // =========================================================
-// SISTEM PENILAIAN (ESTIMASI & MANUAL)
+// SISTEM PENILAIAN
 // =========================================================
+
+// Estimasi kasar dari esai — hanya referensi, BUKAN nilai final.
 function calculateEstimatedScore(s) {
     let score = 0;
     const q1 = (s.q1_essay || '').toLowerCase();
@@ -109,8 +117,22 @@ function calculateEstimatedScore(s) {
     return score;
 }
 
-function getDisplayScore(s) {
-    return s.final_score !== null && s.final_score !== undefined ? Number(s.final_score) : calculateEstimatedScore(s);
+// True jika guru sudah input manual (minimal satu q*_score terisi).
+function isManuallyGraded(s) {
+    return [s.q1_score, s.q2_score, s.q3_score, s.q4_score]
+        .some(q => q !== null && q !== undefined);
+}
+
+// Nilai final:
+// - Sudah dinilai manual → pakai final_score (kolom DB) atau jumlah q1..q4
+// - Belum dinilai → pakai estimasi
+function getFinalScore(s) {
+    if (isManuallyGraded(s)) {
+        if (s.final_score !== null && s.final_score !== undefined) return Number(s.final_score);
+        return [s.q1_score, s.q2_score, s.q3_score, s.q4_score]
+            .reduce((sum, q) => sum + (Number(q) || 0), 0);
+    }
+    return calculateEstimatedScore(s);
 }
 
 // =========================================================
@@ -130,16 +152,15 @@ async function loadStats() {
     const token = getToken();
     if (!token) return;
     try {
-        // ⬇️ MENGGUNAKAN RPC admin_get_stats_ukin ⬇️
         const { data, error } = await supabaseClient.rpc('admin_get_stats_ukin', { p_token: token });
         if (error) throw error;
         const s = data || {};
         $('stat-visits').textContent = s.total_visits ?? 0;
         $('stat-submissions').textContent = s.total_submissions ?? 0;
         $('stat-classes').textContent = s.class_count ?? 0;
-        
+
         if (allSubmissions.length > 0) {
-            const totalScore = allSubmissions.reduce((acc, curr) => acc + getDisplayScore(curr), 0);
+            const totalScore = allSubmissions.reduce((acc, curr) => acc + getFinalScore(curr), 0);
             $('stat-average').textContent = (totalScore / allSubmissions.length).toFixed(2);
         } else {
             $('stat-average').textContent = '0.00';
@@ -156,7 +177,6 @@ async function loadSubmissions() {
     const token = getToken();
     if (!token) return;
     try {
-        // ⬇️ MENGGUNAKAN RPC admin_get_submissions_ukin ⬇️
         const { data, error } = await supabaseClient.rpc('admin_get_submissions_ukin', { p_token: token });
         if (error) throw error;
         allSubmissions = data || [];
@@ -189,20 +209,20 @@ function applyFilters() {
     const q = ($('search-name')?.value || '').trim().toLowerCase();
     const cls = $('filter-class')?.value || '';
     const date = $('filter-date')?.value || '';
-    
+
     filtered = allSubmissions.filter((s) => {
         if (q && !(s.student_name || '').toLowerCase().includes(q)) return false;
         if (cls && s.class_name !== cls) return false;
-        if (date && !(s.created_at || '').startsWith(date)) return false; 
+        if (date && !(s.created_at || '').startsWith(date)) return false;
         return true;
     });
-    
+
     const sort = $('sort-by')?.value || 'submitted_desc';
     filtered.sort((a, b) => {
         if (sort === 'submitted_asc') return new Date(a.created_at) - new Date(b.created_at);
         return new Date(b.created_at) - new Date(a.created_at);
     });
-    
+
     currentPage = 1;
     renderTable();
 }
@@ -218,29 +238,41 @@ function renderTable() {
     }
     const start = (currentPage - 1) * PAGE_SIZE;
     const page = filtered.slice(start, start + PAGE_SIZE);
-    
+
     page.forEach((s, idx) => {
         const tr = document.createElement('tr');
         const num = document.createElement('td'); num.textContent = start + idx + 1;
-        const name = document.createElement('td'); name.innerHTML = `<strong>${s.student_name || '-'}</strong><br><small>${s.class_name || '-'}</small>`;
-        const group = document.createElement('td'); group.innerHTML = `${s.group_name || '-'}<br><small>${s.role_name || '-'}</small>`;
+
+        const name = document.createElement('td');
+        name.innerHTML = `<strong>${escapeHtml(s.student_name || '-')}</strong><br><small>${escapeHtml(s.class_name || '-')}</small>`;
+
+        const group = document.createElement('td');
+        group.innerHTML = `${escapeHtml(s.group_name || '-')}<br><small>${escapeHtml(s.role_name || '-')}</small>`;
+
         const sub = document.createElement('td'); sub.textContent = formatDateTime(s.created_at);
-        
-        const finalScore = getDisplayScore(s);
-        const isManual = s.final_score !== null && s.final_score !== undefined;
-        const score = document.createElement('td'); 
-        score.innerHTML = `<strong>${finalScore}</strong> / 8 ${isManual ? '<br><small style="color:var(--success)">✓ Manual</small>' : '<br><small style="color:var(--muted)">Belum dinilai</small>'}`;
-        
+
+        const finalScore = getFinalScore(s);
+        const manual = isManuallyGraded(s);
+        const breakdown = manual
+            ? `<br><small style="color:var(--muted)">Q1:${s.q1_score ?? 0} Q2:${s.q2_score ?? 0} Q3:${s.q3_score ?? 0} Q4:${s.q4_score ?? 0}</small>`
+            : `<br><small style="color:var(--muted)">Belum dinilai</small>`;
+        const scoreCell = document.createElement('td');
+        scoreCell.innerHTML = `<strong>${finalScore}</strong> / 8 ${manual ? '<br><small style="color:var(--success)">✓ Manual</small>' : ''}${breakdown}`;
+
         const act = document.createElement('td');
         const btn = document.createElement('button');
         btn.className = 'btn btn-outline btn-sm'; btn.textContent = 'Periksa';
         btn.addEventListener('click', () => openDetail(s));
         act.appendChild(btn);
-        
-        tr.append(num, name, group, sub, score, act);
+
+        tr.append(num, name, group, sub, scoreCell, act);
         tbody.appendChild(tr);
     });
     renderPagination(pag);
+}
+
+function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
 }
 
 function renderPagination(pag) {
@@ -279,10 +311,22 @@ function formatDateTime(iso) {
 // =========================================================
 // DETAIL MODAL & UPDATE NILAI
 // =========================================================
+function updateTotalLabel() {
+    const q1 = parseFloat($('input-q1-score').value) || 0;
+    const q2 = parseFloat($('input-q2-score').value) || 0;
+    const q3 = parseFloat($('input-q3-score').value) || 0;
+    const q4 = parseFloat($('input-q4-score').value) || 0;
+    $('total-score-label').textContent = (q1 + q2 + q3 + q4).toFixed(1);
+}
+
+['input-q1-score','input-q2-score','input-q3-score','input-q4-score'].forEach((id) => {
+    $(id)?.addEventListener('input', updateTotalLabel);
+});
+
 function openDetail(s) {
     const modal = $('detail-modal'); const title = $('detail-title'); const body = $('detail-body');
     if (!modal || !body) return;
-    
+
     activeDetailId = s.id;
     title.textContent = `Periksa: ${s.student_name} — ${s.class_name}`;
     body.innerHTML = '';
@@ -300,16 +344,17 @@ function openDetail(s) {
     };
 
     addBlock('Identitas', [
-        ['Nama', s.student_name], ['Kelas', s.class_name], ['Kelompok', s.group_name], ['Peran', s.role_name]
+        ['Nama', s.student_name], ['Kelas', s.class_name],
+        ['Kelompok', s.group_name], ['Peran', s.role_name]
     ]);
-    
+
     addBlock('Bagian A — Exit Ticket (Uraian)', [
-        ['Soal 1 (Klasifikasi)', s.q1_essay], 
+        ['Soal 1 (Klasifikasi)', s.q1_essay],
         ['Soal 2 (Alur IPO)', s.q2_essay],
         ['Soal 3 (RAM & SSD)', s.q3_essay],
         ['Soal 4 (Risiko)', s.q4_essay]
     ]);
-    
+
     addBlock('Bagian B — Refleksi', [
         ['Ceklis 1', s.ref_check_1], ['Ceklis 2', s.ref_check_2], ['Ceklis 3', s.ref_check_3],
         ['Hal dipahami', s.ref_text_1], ['Hal membingungkan', s.ref_text_2], ['Kontribusi', s.ref_text_3]
@@ -321,44 +366,72 @@ function openDetail(s) {
     }
     addBlock('Penilaian Antarteman', [['Data Penilaian', peerText]]);
 
-    // Setup Form Nilai
-    const estScore = calculateEstimatedScore(s);
-    $('est-score-label').textContent = estScore;
-    $('input-final-score').value = s.final_score !== null && s.final_score !== undefined ? s.final_score : estScore;
-    $('save-status').textContent = '';
+    // ---- Setup form nilai per soal ----
+    const est = calculateEstimatedScore(s);
+    $('est-score-label').textContent = est;
 
+    // Prefill: pakai nilai manual yang sudah ada; kalau belum ada semua,
+    // bagi estimasi ke 4 soal (maks 2 per soal, kelipatan 0.5).
+    let pre = [s.q1_score, s.q2_score, s.q3_score, s.q4_score];
+    if (pre.every(v => v === null || v === undefined)) {
+        const per = Math.min(2, Math.round((est / 4) * 2) / 2);
+        pre = [per, per, per, per];
+    }
+    $('input-q1-score').value = pre[0] ?? 0;
+    $('input-q2-score').value = pre[1] ?? 0;
+    $('input-q3-score').value = pre[2] ?? 0;
+    $('input-q4-score').value = pre[3] ?? 0;
+    updateTotalLabel();
+
+    $('save-status').textContent = '';
     modal.classList.add('open');
 }
 
 $('btn-save-score')?.addEventListener('click', async () => {
-    const score = parseFloat($('input-final-score').value);
-    if (isNaN(score) || score < 0 || score > 8) {
-        return showToast('Nilai harus berupa angka antara 0 sampai 8.', 'error');
+    const q1 = parseFloat($('input-q1-score').value);
+    const q2 = parseFloat($('input-q2-score').value);
+    const q3 = parseFloat($('input-q3-score').value);
+    const q4 = parseFloat($('input-q4-score').value);
+
+    for (const [label, v] of [['Q1',q1],['Q2',q2],['Q3',q3],['Q4',q4]]) {
+        if (isNaN(v) || v < 0 || v > 2) {
+            return showToast(`Nilai ${label} harus berupa angka antara 0 dan 2.`, 'error');
+        }
     }
     if (!activeDetailId) return;
 
     const btn = $('btn-save-score');
     btn.disabled = true; btn.textContent = 'Menyimpan...';
-    
+
     try {
-        // ⬇️ MENGGUNAKAN RPC admin_update_score ⬇️
-        const { error } = await supabaseClient.rpc('admin_update_score', {
+        // ⬇️ RPC `admin_update_score` (nama lama), signature baru:
+        //    (p_token, p_id, p_q1, p_q2, p_q3, p_q4) → boolean
+        const { data, error } = await supabaseClient.rpc('admin_update_score', {
             p_token: getToken(),
             p_id: activeDetailId,
-            p_score: score
+            p_q1: q1,
+            p_q2: q2,
+            p_q3: q3,
+            p_q4: q4
         });
         if (error) throw error;
+        // Fungsi mengembalikan boolean true jika sukses
+        if (data === false) throw new Error('RPC mengembalikan false — nilai tidak tersimpan.');
 
-        // Update data lokal
-        const index = allSubmissions.findIndex(x => x.id === activeDetailId);
-        if (index !== -1) allSubmissions[index].final_score = score;
-        
+        // Optimistic update lokal
+        const idx = allSubmissions.findIndex(x => x.id === activeDetailId);
+        if (idx !== -1) {
+            allSubmissions[idx].q1_score = q1;
+            allSubmissions[idx].q2_score = q2;
+            allSubmissions[idx].q3_score = q3;
+            allSubmissions[idx].q4_score = q4;
+            allSubmissions[idx].final_score = q1 + q2 + q3 + q4;
+        }
+
         $('save-status').textContent = '✅ Nilai berhasil disimpan!';
         showToast('Nilai berhasil diperbarui.');
-        
         applyFilters();
         loadStats();
-        
     } catch (err) {
         console.error(err);
         showToast('Gagal menyimpan nilai: ' + (err.message || ''), 'error');
@@ -377,22 +450,29 @@ function csvEscape(v) {
     const s = String(v ?? '');
     return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
 }
+
 $('export-csv')?.addEventListener('click', () => {
     if (!filtered.length) { showToast('Tidak ada data untuk diekspor.', 'error'); return; }
-    const headers = ['Nama','Kelas','Kelompok','Peran','Waktu Kirim','Nilai Akhir',
+
+    const headers = [
+        'Nama','Kelas','Kelompok','Peran','Waktu Kirim',
+        'Q1','Q2','Q3','Q4','Nilai Akhir',
         'Esai 1','Esai 2','Esai 3','Esai 4',
         'Ceklis 1','Ceklis 2','Ceklis 3',
         'Refleksi Paham','Refleksi Bingung','Refleksi Kontribusi',
-        'Penilaian Teman (JSON)'];
-        
+        'Penilaian Teman (JSON)'
+    ];
+
     const rows = filtered.map((s) => [
-        s.student_name, s.class_name, s.group_name, s.role_name, s.created_at, getDisplayScore(s),
+        s.student_name, s.class_name, s.group_name, s.role_name, s.created_at,
+        s.q1_score ?? '', s.q2_score ?? '', s.q3_score ?? '', s.q4_score ?? '',
+        getFinalScore(s),
         s.q1_essay, s.q2_essay, s.q3_essay, s.q4_essay,
         s.ref_check_1, s.ref_check_2, s.ref_check_3,
         s.ref_text_1, s.ref_text_2, s.ref_text_3,
         JSON.stringify(s.peer_assessment)
     ]);
-    
+
     const csv = [headers, ...rows].map((r) => r.map(csvEscape).join(',')).join('\n');
     const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8' });
     const url = URL.createObjectURL(blob);
@@ -403,7 +483,7 @@ $('export-csv')?.addEventListener('click', () => {
 });
 
 // =========================================================
-// TOOLBAR & BOOT
+// TOOLBAR
 // =========================================================
 $('search-name')?.addEventListener('input', applyFilters);
 $('filter-class')?.addEventListener('change', applyFilters);
@@ -415,6 +495,9 @@ $('refresh-btn')?.addEventListener('click', async () => {
     showToast('Data diperbarui.');
 });
 
+// =========================================================
+// BOOT
+// =========================================================
 document.addEventListener('DOMContentLoaded', async () => {
     const saved = localStorage.getItem('sk_theme') || 'light';
     document.documentElement.setAttribute('data-theme', saved);
@@ -426,17 +509,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     } else {
         showView('login');
     }
-	
-	(function waitForBadge() {
-	  const badge = document.getElementById('nl-badge-frame');
-	  
-	  if (badge) {
-		// Condition met: Element found, hide it
-		badge.style.display = 'none';
-	  } else {
-		  console.log("finder",badge);
-		// Condition not met: Wait 1000ms and try again
-		setTimeout(waitForBadge, 1000);
-	  }
-	})();
+
+    (function waitForBadge() {
+        const badge = document.getElementById('nl-badge-frame');
+        if (badge) {
+            badge.style.display = 'none';
+        } else {
+            setTimeout(waitForBadge, 1000);
+        }
+    })();
 });
